@@ -1,0 +1,39 @@
+body {
+  background: url("../images/texture.png") repeat; }
+
+#book {
+  position: relative;
+  top: 100px;
+  left: -430px;
+  width: 1360px;
+  height: 650px;
+  border: 8px solid #686868;
+  border-right: 16px solid #686868;
+  margin: 0 auto;
+  background: url("../images/page_bg.png") repeat-y;
+  background-position: 160px; }
+  #book #left_page_container {
+    height: 100%;
+    float: left;
+    width: 45%; }
+  #book .right_page_container {
+    height: 100%;
+    margin-left: 68px;
+    margin-right: 12px;
+    position: absolute;
+    left: 540px;
+    width: 743px;
+    overflow: hidden;
+    background: url("../images/page_bg.png") repeat-y;
+    background-position: -432px; }
+    #book .right_page_container p {
+      padding-right: 20px; }
+  #book #turn {
+    background: url("../images/turn_bg.png") repeat-y;
+    position: absolute;
+    right: 0;
+    width: 0px;
+    height: 100%;
+    z-index: 3; }
+  #book #active_page {
+    min-width: 743px; }
