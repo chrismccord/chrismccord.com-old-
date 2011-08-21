@@ -62,9 +62,12 @@ class @BookView extends Backbone.View
 
 @$(document).ready ->
   CoffeeBook.init()
-  speedFactor = 0.75
+  speedFactor = 0.50
   setTimeout((->
-      $("#turn").animate({width: 1400, right: 800}, 1800 * speedFactor,'linear')
+      $("#turn").animate {right: $("#active_page").width() + 20}, 1800 * speedFactor,'linear', ->
+        $(@).fadeOut(50)
+      $("#turn .middle").animate({width: $("#active_page").width() * 1.25}, 1800 * speedFactor,'linear')
+      
       $("#active_page").parent().animate {width: 0}, 1200 * speedFactor, 'linear', ->
             $("#active_page").parent().hide()
     ), 1000)

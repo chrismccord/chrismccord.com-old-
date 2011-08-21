@@ -29,11 +29,21 @@ body {
     #book .right_page_container p {
       padding-right: 20px; }
   #book #turn {
-    background: url("../images/turn_bg.png") repeat-y;
     position: absolute;
     right: 0;
-    width: 0px;
     height: 100%;
-    z-index: 3; }
+    z-index: 3;
+    overflow: hidden; }
+    #book #turn .shadow_left {
+      float: left;
+      background: url("../images/shadow_left.png") repeat;
+      width: 34px;
+      height: 100%; }
+    #book #turn .middle {
+      float: right;
+      width: auto;
+      height: 100%;
+      background: url("../images/turn_bg.png") repeat-y;
+      background-position: 100% 0px; }
   #book #active_page {
     min-width: 743px; }

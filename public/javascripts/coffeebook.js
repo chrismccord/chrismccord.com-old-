@@ -102,11 +102,15 @@
   this.$(document).ready(function() {
     var speedFactor;
     CoffeeBook.init();
-    speedFactor = 0.75;
+    speedFactor = 0.50;
     return setTimeout((function() {
       $("#turn").animate({
-        width: 1400,
-        right: 800
+        right: $("#active_page").width() + 20
+      }, 1800 * speedFactor, 'linear', function() {
+        return $(this).fadeOut(50);
+      });
+      $("#turn .middle").animate({
+        width: $("#active_page").width() * 1.25
       }, 1800 * speedFactor, 'linear');
       return $("#active_page").parent().animate({
         width: 0

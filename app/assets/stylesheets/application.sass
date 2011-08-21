@@ -36,14 +36,23 @@ body
       padding-right: 20px
 
   #turn
-    background: url('../images/turn_bg.png') repeat-y
+    .shadow_left
+      float: left
+      background: url('../images/shadow_left.png') repeat
+      width: 34px
+      height: 100%
+    .middle
+      float: right
+      width: auto
+      height: 100%
+      background: url('../images/turn_bg.png') repeat-y
+      background-position: 100% 0px
 
     position: absolute
     right: 0
-    width: 0px
     height: 100%
     z-index: 3
-    
+    overflow: hidden
   #active_page
     // must be set here so content does not reflow when animating
     min-width: $page_width
