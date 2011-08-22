@@ -32,10 +32,18 @@ body
     overflow: hidden
     background: url('../images/page_bg.png') repeat-y
     background-position: -432px
+    img
+      height: 400px
+      width: auto
+      display: block
+      margin: 0 auto
     p
       padding-right: 20px
+      overflow: hidden
+
 
   #turn
+    display: none
     .shadow_left
       float: left
       background: url('../images/shadow_left.png') repeat
@@ -53,6 +61,6 @@ body
     height: 100%
     z-index: 3
     overflow: hidden
-  #active_page
+  .page
     // must be set here so content does not reflow when animating
     min-width: $page_width

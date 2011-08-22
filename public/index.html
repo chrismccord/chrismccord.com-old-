@@ -22,7 +22,7 @@
     <script id="page-template" type="text/x-handlebars-template">
       <h1>{{title}}</h1>
       <p>
-        {{content}}
+        {{{content}}}
       </p>
       {{#each paragraph}}
         <p> 
@@ -45,11 +45,11 @@
         </div>
       </div>
       <div class="right_page_container">
-        <div id="next_page">
+        <div class="page next">
         </div>
       </div>
       <div class="right_page_container">
-        <div id="active_page">
+        <div class="page active">
         </div>
       </div>
     </div>

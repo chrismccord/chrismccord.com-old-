@@ -26,9 +26,16 @@ body {
     overflow: hidden;
     background: url("../images/page_bg.png") repeat-y;
     background-position: -432px; }
+    #book .right_page_container img {
+      height: 400px;
+      width: auto;
+      display: block;
+      margin: 0 auto; }
     #book .right_page_container p {
-      padding-right: 20px; }
+      padding-right: 20px;
+      overflow: hidden; }
   #book #turn {
+    display: none;
     position: absolute;
     right: 0;
     height: 100%;
@@ -45,5 +52,5 @@ body {
       height: 100%;
       background: url("../images/turn_bg.png") repeat-y;
       background-position: 100% 0px; }
-  #book #active_page {
+  #book .page {
     min-width: 743px; }
