@@ -66,6 +66,7 @@
       CoffeeBook.__super__.constructor.apply(this, arguments);
     }
     CoffeeBook.prototype.el = "#book";
+    CoffeeBook.prototype.animating = false;
     CoffeeBook.prototype.events = {
       "click #next": "next",
       "click #back": "back"
@@ -73,7 +74,7 @@
     CoffeeBook.prototype.defaults = {
       width: 940,
       height: 800,
-      speedFactor: 0.60
+      speedFactor: 0.30
     };
     CoffeeBook.prototype.pageNumber = 0;
     CoffeeBook.prototype.activePageView = null;
@@ -93,20 +94,39 @@
         content: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.<img src='images/picture2.jpg'/>"
       })
     ]);
+    CoffeeBook.prototype.bindEvents = function() {
+      return $(document).bind('keyup', __bind(function(event) {
+        switch (event.keyCode) {
+          case 37:
+            return this.back();
+          case 39:
+            return this.next();
+        }
+      }, this));
+    };
     CoffeeBook.prototype.init = function() {
+      this.bindEvents();
       new Router();
       return Backbone.history.start();
     };
     CoffeeBook.prototype.next = function() {
-      window.location = "#/page/" + (this.getPageNumber() + 1);
+      if (!this.isAnimating()) {
+        window.location = "#/page/" + (this.getPageNumber() + 1);
+      }
       return false;
     };
     CoffeeBook.prototype.back = function() {
-      window.location = "#/page/" + (this.getPageNumber() - 1);
+      if (!this.isAnimating()) {
+        window.location = "#/page/" + (this.getPageNumber() - 1);
+      }
       return false;
+    };
+    CoffeeBook.prototype.isAnimating = function() {
+      return this.animating;
     };
     CoffeeBook.prototype.animateForward = function(callback) {
       var $active, $turn, $turn_middle, width;
+      this.animating = true;
       width = this.$(".page.active").width();
       $turn = this.$("#turn");
       $turn_middle = this.$("#turn .middle");
@@ -119,13 +139,14 @@
       });
       $turn.stop().show().animate({
         right: width + 20
-      }, 1800 * this.defaults.speedFactor, 'linear', function() {
-        return $turn.fadeOut(50, function() {
+      }, 1800 * this.defaults.speedFactor, 'linear', __bind(function() {
+        return $turn.fadeOut(50, __bind(function() {
+          this.afterAnimateForward();
           if (callback) {
             return callback();
           }
-        });
-      });
+        }, this));
+      }, this));
       $turn_middle.stop().animate({
         width: width * 1.25
       }, 1800 * this.defaults.speedFactor, 'linear');
@@ -135,8 +156,20 @@
         return $active.hide();
       });
     };
+    CoffeeBook.prototype.afterAnimateForward = function() {
+      this.$(".page.active").parent().remove();
+      this.$(".page.next").removeClass("next").addClass("active");
+      $(this.el).prepend('\
+        <div class="right_page_container">\
+          <div class="page next">\
+          </div>\
+        </div>       \
+    ');
+      return this.animating = false;
+    };
     CoffeeBook.prototype.animateBackward = function(callback) {
       var $active, $next, $turn, $turn_middle;
+      this.animating = true;
       $turn = this.$("#turn");
       $next = this.$(".page.next").parent();
       $turn_middle = this.$("#turn .middle");
@@ -158,21 +191,31 @@
         });
         return $next.delay(0.35 * 1800 * this.defaults.speedFactor).animate({
           width: 'toggle'
-        }, 1200 * this.defaults.speedFactor, 'linear', function() {
-          return console.log('next page done animating');
-        });
+        }, 1200 * this.defaults.speedFactor, 'linear');
       }, this)).dequeue().animate({
         width: 34
       }, 1800 * this.defaults.speedFactor, 'linear');
       return $turn.stop().show().animate({
         right: 0
-      }, 1800 * this.defaults.speedFactor, 'linear', function() {
-        return $turn.fadeOut(50, function() {
+      }, 1800 * this.defaults.speedFactor, 'linear', __bind(function() {
+        return $turn.fadeOut(50, __bind(function() {
+          this.afterAnimateBack();
           if (callback) {
             return callback();
           }
-        });
-      });
+        }, this));
+      }, this));
+    };
+    CoffeeBook.prototype.afterAnimateBack = function() {
+      this.$(".page.active").parent().remove();
+      this.$(".page.next").removeClass("next").addClass("active");
+      $(this.el).prepend('\
+        <div class="right_page_container">\
+          <div class="page next">\
+          </div>\
+        </div>       \
+    ');
+      return this.animating = false;
     };
     CoffeeBook.prototype.goTo = function(toPageNumber) {
       if (toPageNumber === "next") {
@@ -187,32 +230,13 @@
           model: this.pages.at(toPageNumber)
         });
         this.$(".page.next").html($(this.nextPageView.el).html());
-        this.animateForward(__bind(function() {
-          this.$(".page.active").parent().remove();
-          this.$(".page.next").removeClass("next").addClass("active");
-          return $(this.el).prepend('\
-            <div class="right_page_container">\
-              <div class="page next">\
-              </div>\
-            </div>       \
-        ');
-        }, this));
+        this.animateForward();
       } else if (toPageNumber < this.pageNumber) {
-        console.log("page = " + toPageNumber);
         this.nextPageView = new PageView({
           model: this.pages.at(toPageNumber)
         });
         this.$(".page.next").html($(this.nextPageView.el).html());
-        this.animateBackward(__bind(function() {
-          this.$(".page.active").parent().remove();
-          this.$(".page.next").removeClass("next").addClass("active");
-          return $(this.el).prepend('\
-            <div class="right_page_container">\
-              <div class="page next">\
-              </div>\
-            </div>       \
-        ');
-        }, this));
+        this.animateBackward();
       } else {
         this.activePageView = new PageView({
           model: this.currentPage()

@@ -5,10 +5,8 @@ class Router extends Backbone.Router
     '/page/:page'     : 'page'
 
     
-  home: ->
-    Book.goTo(0)
-  page: (page) ->
-    Book.goTo(page)
+  home:        -> Book.goTo(0)
+  page: (page) -> Book.goTo(page)
 
 
 # Models
@@ -36,7 +34,8 @@ class @PageView extends Backbone.View
     
 class CoffeeBook extends Backbone.View
   el: "#book"
-  
+  animating: false
+
   events:
     "click #next"         : "next"
     "click #back"         : "back"
@@ -44,7 +43,8 @@ class CoffeeBook extends Backbone.View
   defaults:
     width: 940
     height: 800
-    speedFactor: 0.60
+    speedFactor: 0.30
+    
   pageNumber: 0
   activePageView: null
   nextPageView: null
@@ -56,19 +56,29 @@ class CoffeeBook extends Backbone.View
 
     ])
   
-
+  bindEvents: ->
+    $(document).bind 'keyup', (event) =>
+      switch event.keyCode
+        when 37
+          @back()
+        when 39
+          @next()
   init: ->
+    @bindEvents()
     new Router()
     Backbone.history.start()
     
   next: -> 
-    window.location = "#/page/#{@getPageNumber() + 1}"
+    window.location = "#/page/#{@getPageNumber() + 1}" unless @isAnimating()
     false
   back: -> 
-    window.location = "#/page/#{@getPageNumber() - 1}"
+    window.location = "#/page/#{@getPageNumber() - 1}" unless @isAnimating()
     false
 
+  isAnimating: -> @animating
+  
   animateForward: (callback) ->
+    @animating = true
     width = @$(".page.active").width()
     $turn = @$("#turn")
     $turn_middle = @$("#turn .middle")
@@ -76,16 +86,29 @@ class CoffeeBook extends Backbone.View
  
     $turn.css({"right": '0px'})
     $turn_middle.css({"width": '34px'})
-    $turn.stop().show().animate {right: width + 20}, 1800 * @defaults.speedFactor,'linear', ->
-      $turn.fadeOut 50, ->
+    $turn.stop().show().animate {right: width + 20}, 1800 * @defaults.speedFactor,'linear', =>
+      $turn.fadeOut 50, =>
+        @afterAnimateForward()
         callback() if callback
 
     $turn_middle.stop().animate({width: width * 1.25}, 1800 * @defaults.speedFactor,'linear')
 
     $active.stop().animate {width: 0}, 1200 * @defaults.speedFactor, 'linear', ->
       $active.hide()
-    
+  
+  afterAnimateForward: ->
+    @$(".page.active").parent().remove()
+    @$(".page.next").removeClass("next").addClass("active")
+    $(@el).prepend('
+        <div class="right_page_container">
+          <div class="page next">
+          </div>
+        </div>       
+    ')
+    @animating = false
+      
   animateBackward: (callback) ->
+    @animating = true
     $turn = @$("#turn")
     $next = @$(".page.next").parent()
     $turn_middle = @$("#turn .middle")
@@ -98,15 +121,26 @@ class CoffeeBook extends Backbone.View
       $turn.css({"right": '763px'})
       $turn_middle.css({"width": '928px'})
       $next.delay(0.35 * 1800 * @defaults.speedFactor)
-        .animate {width: 'toggle'}, 1200 * @defaults.speedFactor, 'linear', ->
-          console.log 'next page done animating'
-    ).dequeue().animate({width: 34}, 1800 * @defaults.speedFactor,'linear')
+        .animate {width: 'toggle'}, 1200 * @defaults.speedFactor, 'linear'
+    ).dequeue()
+     .animate({width: 34}, 1800 * @defaults.speedFactor,'linear')
     
-    $turn.stop().show().animate {right: 0}, 1800 * @defaults.speedFactor,'linear', ->
-      $turn.fadeOut 50, ->
+    $turn.stop().show().animate {right: 0}, 1800 * @defaults.speedFactor,'linear', =>
+      $turn.fadeOut 50, =>
+        @afterAnimateBack()
         callback() if callback
 
-
+  afterAnimateBack: ->
+    @$(".page.active").parent().remove()
+    @$(".page.next").removeClass("next").addClass("active")
+    $(@el).prepend('
+        <div class="right_page_container">
+          <div class="page next">
+          </div>
+        </div>       
+    ')
+    @animating = false
+    
 
   # Seek to page model
   #
@@ -118,30 +152,12 @@ class CoffeeBook extends Backbone.View
     if toPageNumber > @pageNumber
       @nextPageView = new PageView({ model: @pages.at(toPageNumber) })
       @$(".page.next").html($(@nextPageView.el).html())
-      @animateForward =>
-        @$(".page.active").parent().remove()
-        @$(".page.next").removeClass("next").addClass("active")
-        $(@el).prepend('
-            <div class="right_page_container">
-              <div class="page next">
-              </div>
-            </div>       
-        ')
+      @animateForward()
       
     else if toPageNumber < @pageNumber
-      console.log "page = #{toPageNumber}"
       @nextPageView = new PageView({ model: @pages.at(toPageNumber) })
       @$(".page.next").html($(@nextPageView.el).html())
-      @animateBackward =>
-        # @$("#turn").remove()
-        @$(".page.active").parent().remove()
-        @$(".page.next").removeClass("next").addClass("active")
-        $(@el).prepend('
-            <div class="right_page_container">
-              <div class="page next">
-              </div>
-            </div>       
-        ')
+      @animateBackward()
     else
       @activePageView  = new PageView({ model: @currentPage() })
       @$(".page.active").html($(@activePageView.el).html())
@@ -149,11 +165,11 @@ class CoffeeBook extends Backbone.View
     @pageNumber = toPageNumber
 
   getPageNumber: -> @pageNumber
-  currentPage: -> @pages.at(@pageNumber) 
-  nextPage:    -> @pages.at(@pageNumber + 1)
-  prevPage:    -> @pages.at(@pageNumber - 1)
-  firstPage:   -> @pages.first()
-  lastPage:    -> @pages.last()
+  currentPage:   -> @pages.at(@pageNumber) 
+  nextPage:      -> @pages.at(@pageNumber + 1)
+  prevPage:      -> @pages.at(@pageNumber - 1)
+  firstPage:     -> @pages.first()
+  lastPage:      -> @pages.last()
 
 @$(document).ready ->
   window.Book = new CoffeeBook
