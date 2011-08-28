@@ -1,5 +1,5 @@
 (function() {
-  var CoffeeBook, Router;
+  var Router;
   var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
     for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
     function ctor() { this.constructor = child; }
@@ -60,7 +60,7 @@
     };
     return PageView;
   })();
-  CoffeeBook = (function() {
+  this.CoffeeBook = (function() {
     __extends(CoffeeBook, Backbone.View);
     function CoffeeBook() {
       CoffeeBook.__super__.constructor.apply(this, arguments);
@@ -72,10 +72,13 @@
       "click #back": "back"
     };
     CoffeeBook.prototype.defaults = {
-      width: 940,
+      enableKeys: true,
+      turnWidthStart: 12,
+      foldOffset: 32,
       height: 800,
       speedFactor: 0.30
     };
+    CoffeeBook.prototype.options = {};
     CoffeeBook.prototype.pageNumber = 0;
     CoffeeBook.prototype.activePageView = null;
     CoffeeBook.prototype.nextPageView = null;
@@ -94,15 +97,30 @@
         content: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.<img src='images/picture2.jpg'/>"
       })
     ]);
+    CoffeeBook.prototype.initialize = function(options) {
+      var key, val, _results;
+      if (options == null) {
+        options = {};
+      }
+      _.extend(this.options, this.defaults);
+      _results = [];
+      for (key in options) {
+        val = options[key];
+        _results.push(this.options[key] = val);
+      }
+      return _results;
+    };
     CoffeeBook.prototype.bindEvents = function() {
-      return $(document).bind('keyup', __bind(function(event) {
-        switch (event.keyCode) {
-          case 37:
-            return this.back();
-          case 39:
-            return this.next();
-        }
-      }, this));
+      if (this.options.enableKeys) {
+        return $(document).bind('keyup', __bind(function(event) {
+          switch (event.keyCode) {
+            case 37:
+              return this.back();
+            case 39:
+              return this.next();
+          }
+        }, this));
+      }
     };
     CoffeeBook.prototype.init = function() {
       this.bindEvents();
@@ -125,21 +143,24 @@
       return this.animating;
     };
     CoffeeBook.prototype.animateForward = function(callback) {
-      var $active, $turn, $turn_middle, width;
+      var $active, $turn, $turn_middle, activeSpeed, turnSpeed, turnWidth, width;
       this.animating = true;
       width = this.$(".page.active").width();
       $turn = this.$("#turn");
       $turn_middle = this.$("#turn .middle");
       $active = this.$(".page.active").parent();
       $turn.css({
-        "right": '0px'
+        right: 0
       });
       $turn_middle.css({
-        "width": '34px'
+        width: this.options.turnWidthStart
       });
+      turnWidth = width + this.options.foldOffset;
+      turnSpeed = 1800 * this.options.speedFactor;
+      activeSpeed = 1200 * this.options.speedFactor;
       $turn.stop().show().animate({
-        right: width + 20
-      }, 1800 * this.defaults.speedFactor, 'linear', __bind(function() {
+        right: turnWidth
+      }, turnSpeed, 'linear', __bind(function() {
         return $turn.fadeOut(50, __bind(function() {
           this.afterAnimateForward();
           if (callback) {
@@ -149,10 +170,10 @@
       }, this));
       $turn_middle.stop().animate({
         width: width * 1.25
-      }, 1800 * this.defaults.speedFactor, 'linear');
+      }, turnSpeed, 'linear');
       return $active.stop().animate({
         width: 0
-      }, 1200 * this.defaults.speedFactor, 'linear', function() {
+      }, activeSpeed, 'linear', function() {
         return $active.hide();
       });
     };
@@ -168,12 +189,15 @@
       return this.animating = false;
     };
     CoffeeBook.prototype.animateBackward = function(callback) {
-      var $active, $next, $turn, $turn_middle;
+      var $active, $next, $turn, $turn_middle, nextDelay, nextSpeed, turnSpeed;
       this.animating = true;
       $turn = this.$("#turn");
       $next = this.$(".page.next").parent();
       $turn_middle = this.$("#turn .middle");
       $active = this.$(".page.active").parent();
+      turnSpeed = 1800 * this.options.speedFactor;
+      nextSpeed = (2 / 3) * turnSpeed;
+      nextDelay = 0.35 * turnSpeed;
       $turn_middle.stop().queue(__bind(function() {
         var width;
         width = this.$(".page.active").width();
@@ -184,20 +208,20 @@
           "z-index": 1
         });
         $turn.css({
-          "right": '763px'
+          right: width + this.options.foldOffset
         });
         $turn_middle.css({
-          "width": '928px'
+          width: width * 1.25
         });
-        return $next.delay(0.35 * 1800 * this.defaults.speedFactor).animate({
+        return $next.delay(nextDelay).animate({
           width: 'toggle'
-        }, 1200 * this.defaults.speedFactor, 'linear');
+        }, nextSpeed, 'linear');
       }, this)).dequeue().animate({
-        width: 34
-      }, 1800 * this.defaults.speedFactor, 'linear');
+        width: this.options.turnWidthStart
+      }, turnSpeed, 'linear');
       return $turn.stop().show().animate({
         right: 0
-      }, 1800 * this.defaults.speedFactor, 'linear', __bind(function() {
+      }, turnSpeed, 'linear', __bind(function() {
         return $turn.fadeOut(50, __bind(function() {
           this.afterAnimateBack();
           if (callback) {

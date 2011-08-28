@@ -32,7 +32,7 @@ class @PageView extends Backbone.View
     template = Handlebars.compile($("#page-template").html())
     $(@el).html(template(@model.toJSON()))
     
-class CoffeeBook extends Backbone.View
+class @CoffeeBook extends Backbone.View
   el: "#book"
   animating: false
 
@@ -41,10 +41,17 @@ class CoffeeBook extends Backbone.View
     "click #back"         : "back"
     
   defaults:
-    width: 940
+    enableKeys: true
+    # width: 940
+    # pageWidth: 743
+    turnWidthStart: 12
+    foldOffset: 32
     height: 800
     speedFactor: 0.30
     
+  # Defaults automatically loaded when instantiated
+  options: {}
+  
   pageNumber: 0
   activePageView: null
   nextPageView: null
@@ -56,13 +63,18 @@ class CoffeeBook extends Backbone.View
 
     ])
   
+  initialize: (options = {}) ->
+    _.extend(@options, @defaults)
+    @options[key] = val for key, val of options
+
   bindEvents: ->
-    $(document).bind 'keyup', (event) =>
-      switch event.keyCode
-        when 37
-          @back()
-        when 39
-          @next()
+    if @options.enableKeys
+      $(document).bind 'keyup', (event) =>
+        switch event.keyCode
+          when 37
+            @back()
+          when 39
+            @next()
   init: ->
     @bindEvents()
     new Router()
@@ -83,17 +95,19 @@ class CoffeeBook extends Backbone.View
     $turn = @$("#turn")
     $turn_middle = @$("#turn .middle")
     $active = @$(".page.active").parent()
- 
-    $turn.css({"right": '0px'})
-    $turn_middle.css({"width": '34px'})
-    $turn.stop().show().animate {right: width + 20}, 1800 * @defaults.speedFactor,'linear', =>
+    $turn.css({right: 0})
+    $turn_middle.css({width: @options.turnWidthStart})
+    turnWidth = width + @options.foldOffset
+    turnSpeed = 1800 * @options.speedFactor
+    activeSpeed = 1200 * @options.speedFactor
+    
+    $turn.stop().show().animate {right: turnWidth}, turnSpeed, 'linear', =>
       $turn.fadeOut 50, =>
         @afterAnimateForward()
         callback() if callback
 
-    $turn_middle.stop().animate({width: width * 1.25}, 1800 * @defaults.speedFactor,'linear')
-
-    $active.stop().animate {width: 0}, 1200 * @defaults.speedFactor, 'linear', ->
+    $turn_middle.stop().animate({width: width * 1.25}, turnSpeed, 'linear')
+    $active.stop().animate {width: 0}, activeSpeed, 'linear', ->
       $active.hide()
   
   afterAnimateForward: ->
@@ -114,18 +128,21 @@ class CoffeeBook extends Backbone.View
     $turn_middle = @$("#turn .middle")
     $active = @$(".page.active").parent()
     
+    turnSpeed = 1800 * @options.speedFactor
+    nextSpeed = (2/3) * turnSpeed
+    nextDelay = 0.35 * turnSpeed
     $turn_middle.stop().queue(=>  
       width = @$(".page.active").width()
       $next.css({"z-index": 2}).hide()
       $active.css({"z-index": 1})
-      $turn.css({"right": '763px'})
-      $turn_middle.css({"width": '928px'})
-      $next.delay(0.35 * 1800 * @defaults.speedFactor)
-        .animate {width: 'toggle'}, 1200 * @defaults.speedFactor, 'linear'
+      $turn.css({right: width + @options.foldOffset})
+      $turn_middle.css({width: width * 1.25})
+      $next.delay(nextDelay)
+        .animate {width: 'toggle'}, nextSpeed, 'linear'
     ).dequeue()
-     .animate({width: 34}, 1800 * @defaults.speedFactor,'linear')
+     .animate({width: @options.turnWidthStart}, turnSpeed,'linear')
     
-    $turn.stop().show().animate {right: 0}, 1800 * @defaults.speedFactor,'linear', =>
+    $turn.stop().show().animate {right: 0}, turnSpeed,'linear', =>
       $turn.fadeOut 50, =>
         @afterAnimateBack()
         callback() if callback
