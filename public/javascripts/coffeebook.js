@@ -1,4 +1,5 @@
 (function() {
+  var CoffeeBook, Router;
   var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
     for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
     function ctor() { this.constructor = child; }
@@ -7,6 +8,23 @@
     child.__super__ = parent.prototype;
     return child;
   }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  Router = (function() {
+    __extends(Router, Backbone.Router);
+    function Router() {
+      Router.__super__.constructor.apply(this, arguments);
+    }
+    Router.prototype.routes = {
+      '': 'home',
+      '/page/:page': 'page'
+    };
+    Router.prototype.home = function() {
+      return Book.goTo(0);
+    };
+    Router.prototype.page = function(page) {
+      return Book.goTo(page);
+    };
+    return Router;
+  })();
   this.Page = (function() {
     __extends(Page, Backbone.Model);
     function Page() {
@@ -28,41 +46,39 @@
   this.PageView = (function() {
     __extends(PageView, Backbone.View);
     function PageView() {
+      this.render = __bind(this.render, this);
       PageView.__super__.constructor.apply(this, arguments);
     }
-    PageView.prototype.render = function() {
-      $(this.el).html(this.template(this.model.toJSON()));
-      return this;
-    };
-    return PageView;
-  })();
-  this.BookView = (function() {
-    __extends(BookView, Backbone.View);
-    function BookView() {
-      BookView.__super__.constructor.apply(this, arguments);
-    }
-    BookView.prototype.initialize = function() {
-      _.bindAll(this, 'render');
+    PageView.prototype.initialize = function() {
       this.model.bind('change', this.render);
       return this.render();
     };
-    BookView.prototype.render = function() {
+    PageView.prototype.render = function() {
       var template;
       template = Handlebars.compile($("#page-template").html());
       return $(this.el).html(template(this.model.toJSON()));
     };
-    return BookView;
+    return PageView;
   })();
-  this.CoffeeBook = {
-    defaults: {
+  CoffeeBook = (function() {
+    __extends(CoffeeBook, Backbone.View);
+    function CoffeeBook() {
+      CoffeeBook.__super__.constructor.apply(this, arguments);
+    }
+    CoffeeBook.prototype.el = "#book";
+    CoffeeBook.prototype.events = {
+      "click #next": "next",
+      "click #back": "back"
+    };
+    CoffeeBook.prototype.defaults = {
       width: 940,
       height: 800,
-      speedFactor: 0.30
-    },
-    pageNumber: 0,
-    activePageView: null,
-    nextPageView: null,
-    pages: new Pages([
+      speedFactor: 0.60
+    };
+    CoffeeBook.prototype.pageNumber = 0;
+    CoffeeBook.prototype.activePageView = null;
+    CoffeeBook.prototype.nextPageView = null;
+    CoffeeBook.prototype.pages = new Pages([
       new Page({
         title: 'page 1',
         content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
@@ -72,17 +88,29 @@
       }), new Page({
         title: 'page 3',
         content: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.<img src='images/picture2.jpg'/>"
+      }), new Page({
+        title: 'page 4',
+        content: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.<img src='images/picture2.jpg'/>"
       })
-    ]),
-    init: function() {
-      return this.goTo(0);
-    },
-    animateForward: function(callback) {
+    ]);
+    CoffeeBook.prototype.init = function() {
+      new Router();
+      return Backbone.history.start();
+    };
+    CoffeeBook.prototype.next = function() {
+      window.location = "#/page/" + (this.getPageNumber() + 1);
+      return false;
+    };
+    CoffeeBook.prototype.back = function() {
+      window.location = "#/page/" + (this.getPageNumber() - 1);
+      return false;
+    };
+    CoffeeBook.prototype.animateForward = function(callback) {
       var $active, $turn, $turn_middle, width;
-      width = $(".page.active").width();
-      $turn = $("#turn");
-      $turn_middle = $("#turn .middle");
-      $active = $(".page.active").parent();
+      width = this.$(".page.active").width();
+      $turn = this.$("#turn");
+      $turn_middle = this.$("#turn .middle");
+      $active = this.$(".page.active").parent();
       $turn.css({
         "right": '0px'
       });
@@ -98,26 +126,30 @@
           }
         });
       });
-      $turn_middle.animate({
+      $turn_middle.stop().animate({
         width: width * 1.25
       }, 1800 * this.defaults.speedFactor, 'linear');
-      return $active.animate({
+      return $active.stop().animate({
         width: 0
       }, 1200 * this.defaults.speedFactor, 'linear', function() {
         return $active.hide();
       });
-    },
-    animateBackward: function(callback) {
-      var $next, $turn, $turn_middle;
-      $turn = $("#turn");
-      $next = $(".page.next").parent();
-      $turn_middle = $("#turn .middle");
+    };
+    CoffeeBook.prototype.animateBackward = function(callback) {
+      var $active, $next, $turn, $turn_middle;
+      $turn = this.$("#turn");
+      $next = this.$(".page.next").parent();
+      $turn_middle = this.$("#turn .middle");
+      $active = this.$(".page.active").parent();
       $turn_middle.stop().queue(__bind(function() {
         var width;
-        width = $(".page.active").width();
+        width = this.$(".page.active").width();
         $next.css({
           "z-index": 2
         }).hide();
+        $active.css({
+          "z-index": 1
+        });
         $turn.css({
           "right": '763px'
         });
@@ -126,7 +158,9 @@
         });
         return $next.delay(0.35 * 1800 * this.defaults.speedFactor).animate({
           width: 'toggle'
-        }, 1200 * this.defaults.speedFactor, 'linear');
+        }, 1200 * this.defaults.speedFactor, 'linear', function() {
+          return console.log('next page done animating');
+        });
       }, this)).dequeue().animate({
         width: 34
       }, 1800 * this.defaults.speedFactor, 'linear');
@@ -139,17 +173,24 @@
           }
         });
       });
-    },
-    goTo: function(toPageNumber) {
+    };
+    CoffeeBook.prototype.goTo = function(toPageNumber) {
+      if (toPageNumber === "next") {
+        toPageNumber = this.pageNumber + 1;
+      }
+      if (toPageNumber === "back") {
+        toPageNumber = this.pageNumber - 1;
+      }
+      toPageNumber = parseInt(toPageNumber);
       if (toPageNumber > this.pageNumber) {
-        this.nextPageView = new BookView({
+        this.nextPageView = new PageView({
           model: this.pages.at(toPageNumber)
         });
-        $(".page.next").html($(this.nextPageView.el).html());
+        this.$(".page.next").html($(this.nextPageView.el).html());
         this.animateForward(__bind(function() {
-          $(".page.active").parent().remove();
-          $(".page.next").removeClass("next").addClass("active");
-          return $("#book").prepend('\
+          this.$(".page.active").parent().remove();
+          this.$(".page.next").removeClass("next").addClass("active");
+          return $(this.el).prepend('\
             <div class="right_page_container">\
               <div class="page next">\
               </div>\
@@ -157,21 +198,15 @@
         ');
         }, this));
       } else if (toPageNumber < this.pageNumber) {
-        this.nextPageView = new BookView({
+        console.log("page = " + toPageNumber);
+        this.nextPageView = new PageView({
           model: this.pages.at(toPageNumber)
         });
-        $(".page.next").html($(this.nextPageView.el).html());
+        this.$(".page.next").html($(this.nextPageView.el).html());
         this.animateBackward(__bind(function() {
-          $("#turn").remove();
-          $(".page.active").parent().remove();
-          $(".page.next").removeClass("next").addClass("active");
-          return $("#book").prepend('\
-            <div id="turn">\
-              <div class="middle">\
-              </div>\
-              <div class="shadow_left">\
-              </div>\
-            </div>\
+          this.$(".page.active").parent().remove();
+          this.$(".page.next").removeClass("next").addClass("active");
+          return $(this.el).prepend('\
             <div class="right_page_container">\
               <div class="page next">\
               </div>\
@@ -179,30 +214,35 @@
         ');
         }, this));
       } else {
-        this.activePageView = new BookView({
+        this.activePageView = new PageView({
           model: this.currentPage()
         });
-        $(".page.active").html($(this.activePageView.el).html());
+        this.$(".page.active").html($(this.activePageView.el).html());
       }
       return this.pageNumber = toPageNumber;
-    },
-    currentPage: function() {
+    };
+    CoffeeBook.prototype.getPageNumber = function() {
+      return this.pageNumber;
+    };
+    CoffeeBook.prototype.currentPage = function() {
       return this.pages.at(this.pageNumber);
-    },
-    nextPage: function() {
+    };
+    CoffeeBook.prototype.nextPage = function() {
       return this.pages.at(this.pageNumber + 1);
-    },
-    prevPage: function() {
+    };
+    CoffeeBook.prototype.prevPage = function() {
       return this.pages.at(this.pageNumber - 1);
-    },
-    firstPage: function() {
+    };
+    CoffeeBook.prototype.firstPage = function() {
       return this.pages.first();
-    },
-    lastPage: function() {
+    };
+    CoffeeBook.prototype.lastPage = function() {
       return this.pages.last();
-    }
-  };
+    };
+    return CoffeeBook;
+  })();
   this.$(document).ready(function() {
-    return CoffeeBook.init();
+    window.Book = new CoffeeBook;
+    return Book.init();
   });
 }).call(this);

@@ -64,3 +64,21 @@ body
   .page
     // must be set here so content does not reflow when animating
     min-width: $page_width
+
+#next
+  z-index: $top_z + 1
+  position: fixed
+  right: 0
+  top: 50%
+  width: 40px
+  height: 100px
+  border: 1px solid black
+
+#back
+  z-index: $top_z + 1
+  position: fixed
+  left: 0
+  top: 50%
+  width: 40px
+  height: 100px
+  border: 1px solid black  

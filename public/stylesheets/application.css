@@ -54,3 +54,21 @@ body {
       background-position: 100% 0px; }
   #book .page {
     min-width: 743px; }
+
+#next {
+  z-index: 1000;
+  position: fixed;
+  right: 0;
+  top: 50%;
+  width: 40px;
+  height: 100px;
+  border: 1px solid black; }
+
+#back {
+  z-index: 1000;
+  position: fixed;
+  left: 0;
+  top: 50%;
+  width: 40px;
+  height: 100px;
+  border: 1px solid black; }
