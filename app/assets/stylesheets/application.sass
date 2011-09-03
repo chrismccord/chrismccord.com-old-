@@ -4,8 +4,15 @@ $page_width: 743px
 
 body
   background: url('../images/texture.png') repeat
+  margin: 0
+  padding: 0
 
-#book
+.header
+  height: 48px
+  background: url('../images/header_bg.png') repeat-x
+  width: 100%
+  background-position: 0px -84px
+.book_wrap
   -webkit-box-shadow: 0px 0px 15px rgba(50, 50, 50, 0.75)
   -moz-box-shadow:    0px 0px 15px rgba(50, 50, 50, 0.75)
   box-shadow:         0px 0px 15px rgba(50, 50, 50, 0.75)
@@ -14,13 +21,14 @@ body
   left: -430px
   width: 1360px
   height: 650px
-  border: 8px solid #686868
-  border-right: 16px solid #686868
-  border-image: url('../images/texture.png') 8px 16px 8px 8px stretch stretch
-  margin: 0 auto  
-  background: url('../images/page_bg2.png') repeat-y
-  background-position: 160px
-  
+  padding: 8px
+  padding-right: 16px
+  margin: 0 auto
+  background: #686868 url('../images/edge_bg.png') repeat
+  -webkit-border-radius: 3px
+  -moz-border-radius: 3px
+  border-radius: 3px
+
   .rounded_top
     position: absolute
     width: 75px
@@ -35,6 +43,13 @@ body
     bottom: -11px
     left: 518px
     background: url('../images/accent_bottom.png') no-repeat
+    
+#book
+  width: 100%
+  height: 100%
+  position: relative
+  background: url('../images/page_bg2.png') repeat-y
+  background-position: 160px
 
   .page_corner_top
     width: 12px
