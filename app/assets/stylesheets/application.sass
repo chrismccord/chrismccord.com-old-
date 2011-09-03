@@ -6,6 +6,9 @@ body
   background: url('../images/texture.png') repeat
 
 #book
+  -webkit-box-shadow: 0px 0px 15px rgba(50, 50, 50, 0.75)
+  -moz-box-shadow:    0px 0px 15px rgba(50, 50, 50, 0.75)
+  box-shadow:         0px 0px 15px rgba(50, 50, 50, 0.75)
   position: relative
   top: 100px
   left: -430px
@@ -13,10 +16,44 @@ body
   height: 650px
   border: 8px solid #686868
   border-right: 16px solid #686868
+  border-image: url('../images/texture.png') 8px 16px 8px 8px stretch stretch
   margin: 0 auto  
-  background: url('../images/page_bg.png') repeat-y
+  background: url('../images/page_bg2.png') repeat-y
   background-position: 160px
   
+  .rounded_top
+    position: absolute
+    width: 75px
+    height: 11px
+    top: -11px
+    left: 518px
+    background: url('../images/accent_top.png') no-repeat
+  .rounded_bottom
+    position: absolute
+    width: 75px
+    height: 11px
+    bottom: -11px
+    left: 518px
+    background: url('../images/accent_bottom.png') no-repeat
+
+  .page_corner_top
+    width: 12px
+    height: 9px
+    position: absolute
+    top: 0px
+    right: -3px
+    z-index: $top_z
+    background: url('../images/page_corner_top.png') no-repeat
+
+  .page_corner_bottom
+    width: 12px
+    height: 9px
+    position: absolute
+    bottom: 0px
+    right: -3px
+    z-index: $top_z
+    background: url('../images/page_corner_bottom.png') no-repeat
+
   #left_page_container
     height: 100%
     float: left
@@ -30,18 +67,50 @@ body
     left: 540px
     width: $page_width
     overflow: hidden
-    background: url('../images/page_bg.png') repeat-y
-    background-position: -432px
+    background: url('../images/page_bg2.png') repeat-y
+    background-position: -445px
+    
+    font-family: 'Merriweather', serif
+    font-size: 15px
+    line-height: 1.5em
+    color: #2e2e2e
+    
     img
       height: 400px
       width: auto
       display: block
       margin: 0 auto
-    p
-      padding-right: 20px
-      overflow: hidden
+    h1
+      //font-family: 'Istok Web', sans-serif
+      //font-family: 'Lato', sans-serif
+      //font-family: 'Merriweather', serif
+      font-family: 'Muli', sans-serif
+      color: #2e2e2e
+      //font-variant: small-caps
+      //text-transform: none
+      font-weight: 300
+      margin-bottom: 0
+    h2
+      font-family: 'Muli', sans-serif
+      font-size: 15px
+      font-weight: lighter
+      font-variant: normal
+      text-transform: uppercase
+      color: #2e2e2e
+      margin-top: 10px
+      letter-spacing: 0.1em
+    //p, li
 
-
+      
+    pre
+      font: 14px 'Bitstream Vera Sans Mono','Courier',monospace
+      padding: 12px
+      background-color: rgba(200, 200, 200, 0.2)
+      border: 1px solid #dddddd
+      width: 80%
+      margin: 0 auto
+      line-height: 1.3
+      
   #turn
     display: none
     .shadow_left
