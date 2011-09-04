@@ -1,44 +1,95 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block; }
+
 body {
-  background: url("../images/texture.png") repeat;
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after {
+  content: "";
+  content: none; }
+
+q:before, q:after {
+  content: "";
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+body {
+  background: url("../images/texture2.png") repeat;
   margin: 0;
   padding: 0; }
 
 .header {
-  height: 48px;
-  background: url("../images/header_bg.png") repeat-x;
-  width: 100%;
-  background-position: 0px -84px; }
+  height: 32px;
+  background: url("../images/edge_bg2.png") repeat-x;
+  width: 100%; }
+  .header ul.nav {
+    display: inline;
+    float: right; }
+    .header ul.nav li {
+      line-height: 32px;
+      padding-left: 16x;
+      padding-right: 16px;
+      display: inline;
+      font-family: "Muli", sans-serif;
+      font-size: 22px;
+      color: #f2f2f2; }
+  .header h1 {
+    float: left;
+    line-height: 32px;
+    padding: 6px;
+    padding-top: 0px;
+    margin: 0;
+    font-family: "Muli", sans-serif;
+    font-size: 28px;
+    color: #f2f2f2; }
 
 .book_wrap {
   -webkit-box-shadow: 0px 0px 15px rgba(50, 50, 50, 0.75);
   -moz-box-shadow: 0px 0px 15px rgba(50, 50, 50, 0.75);
   box-shadow: 0px 0px 15px rgba(50, 50, 50, 0.75);
   position: relative;
-  top: 100px;
+  top: 40px;
   left: -430px;
   width: 1360px;
   height: 650px;
   padding: 8px;
   padding-right: 16px;
   margin: 0 auto;
-  background: #686868 url("../images/edge_bg.png") repeat;
+  background: #686868 url("../images/edge_bg2.png") repeat;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px; }
   .book_wrap .rounded_top {
     position: absolute;
     width: 75px;
-    height: 11px;
-    top: -11px;
+    height: 10px;
+    top: -10px;
     left: 518px;
-    background: url("../images/accent_top.png") no-repeat; }
+    background: url("../images/accent_top2.png") no-repeat; }
   .book_wrap .rounded_bottom {
     position: absolute;
     width: 75px;
-    height: 11px;
-    bottom: -11px;
+    height: 10px;
+    bottom: -10px;
     left: 518px;
-    background: url("../images/accent_bottom.png") no-repeat; }
+    background: url("../images/accent_bottom2.png") no-repeat; }
 
 #book {
   width: 100%;
@@ -53,7 +104,7 @@ body {
     top: 0px;
     right: -3px;
     z-index: 999;
-    background: url("../images/page_corner_top.png") no-repeat; }
+    background: url("../images/page_corner_top2.png") no-repeat; }
   #book .page_corner_bottom {
     width: 12px;
     height: 9px;
@@ -61,7 +112,7 @@ body {
     bottom: 0px;
     right: -3px;
     z-index: 999;
-    background: url("../images/page_corner_bottom.png") no-repeat; }
+    background: url("../images/page_corner_bottom2.png") no-repeat; }
   #book #left_page_container {
     height: 100%;
     float: left;
@@ -80,17 +131,22 @@ body {
     font-size: 15px;
     line-height: 1.5em;
     color: #2e2e2e; }
+    #book .right_page_container blockquote {
+      padding: 20px 40px 20px 40px; }
     #book .right_page_container img {
       height: 400px;
       width: auto;
       display: block;
       margin: 0 auto; }
     #book .right_page_container h1 {
+      padding-top: 14px;
       font-family: "Muli", sans-serif;
       color: #2e2e2e;
       font-weight: 300;
+      font-size: 2em;
       margin-bottom: 0; }
     #book .right_page_container h2 {
+      font-size: 1em;
       font-family: "Muli", sans-serif;
       font-size: 15px;
       font-weight: lighter;
