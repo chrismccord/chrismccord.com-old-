@@ -21,7 +21,9 @@
     <script src="javascripts/coffeebook.js"></script>
 
     <script id="page-template" type="text/x-handlebars-template">
-      <h1>{{title}}</h1>
+      {{#if title}}
+        <h1>{{title}}</h1>
+      {{/if}}
       <p>
         {{{content}}}
       </p>
@@ -39,11 +41,11 @@
 
   <body>
     <div class="header">
-      <h1>chrismccord&gt;writings_</h1>
+      <a href="#/page/home"><h1>chrismccord&gt;<span class="title"></span>_</h1></a>
       <ul class="nav">
-        <li>writings</li>
-        <li>about</li>
-        <li>contact</li>
+        <li><a href="#/page/writings">writings</a></li>
+        <li><a href="#/page/about">about</a></li>
+        <li><a href="#/page/contact">contact</a></li>
       </ul>
     </div>
     <div class="book_wrap">
@@ -56,12 +58,7 @@
         </div>
         <div class="rounded_bottom">
         </div>      
-        <div id="next">
-          <a href="#/next">&gt</a>
-        </div>
-        <div id="back">
-          <a href="#/back">&lt</a>
-        </div>
+
         <div id="turn">
           <div class="middle">
           </div>

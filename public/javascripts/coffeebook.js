@@ -15,13 +15,17 @@
     }
     Router.prototype.routes = {
       '': 'home',
-      '/page/:page': 'page'
+      '/page/:name': 'page',
+      '/page/:name/:number': 'page'
     };
     Router.prototype.home = function() {
-      return Book.goTo(0);
+      return Book.goTo('home', 0);
     };
-    Router.prototype.page = function(page) {
-      return Book.goTo(page);
+    Router.prototype.page = function(name, number) {
+      if (number == null) {
+        number = 0;
+      }
+      return Book.goTo(name, number);
     };
     return Router;
   })();
@@ -81,10 +85,14 @@
       turnWidthStart: 12,
       foldOffset: 32,
       height: 800,
+      minHeight: 550,
+      heightDuration: 200,
       speedFactor: 0.30
     };
     CoffeeBook.prototype.options = {};
-    CoffeeBook.prototype.pageNumber = 0;
+    CoffeeBook.prototype.pageNumber = null;
+    CoffeeBook.prototype.currentPage = null;
+    CoffeeBook.prototype.previousPage = null;
     CoffeeBook.prototype.activePageView = null;
     CoffeeBook.prototype.nextPageView = null;
     CoffeeBook.prototype.pages = [];
@@ -232,7 +240,27 @@
     ');
       return this.animating = false;
     };
-    CoffeeBook.prototype.goTo = function(toPageNumber) {
+    CoffeeBook.prototype.updateHeight = function(options) {
+      var height;
+      if (options == null) {
+        options = {};
+      }
+      height = $(".page.active").height();
+      if (height < this.options.minHeight) {
+        height = this.options.minHeight;
+      }
+      if (options.animate === false) {
+        return $(".book_wrap").css({
+          height: height
+        });
+      } else {
+        return $(".book_wrap").animate({
+          height: height
+        }, this.options.heightDuration);
+      }
+    };
+    CoffeeBook.prototype.goTo = function(name, toPageNumber) {
+      var _ref, _ref2;
       if (toPageNumber === "next") {
         toPageNumber = this.pageNumber + 1;
       }
@@ -240,31 +268,38 @@
         toPageNumber = this.pageNumber - 1;
       }
       toPageNumber = parseInt(toPageNumber);
-      if (toPageNumber > this.pageNumber) {
-        this.nextPageView = new PageView({
-          model: this.pages.at(toPageNumber)
-        });
-        this.$(".page.next").html($(this.nextPageView.el).html());
-        this.animateForward();
-      } else if (toPageNumber < this.pageNumber) {
-        this.nextPageView = new PageView({
-          model: this.pages.at(toPageNumber)
-        });
-        this.$(".page.next").html($(this.nextPageView.el).html());
-        this.animateBackward();
-      } else {
+      this.previousPage = this.currentPage;
+      this.currentPage = this.pages[name];
+      if (!this.previousPage) {
         this.activePageView = new PageView({
-          model: this.currentPage()
+          model: this.pages[name]
         });
         this.$(".page.active").html($(this.activePageView.el).html());
+        this.updateHeight({
+          animate: false
+        });
+      } else if (((_ref = this.currentPage) != null ? _ref.get('rank') : void 0) > ((_ref2 = this.previousPage) != null ? _ref2.get('rank') : void 0)) {
+        this.nextPageView = new PageView({
+          model: this.pages[name]
+        });
+        this.$(".page.next").html($(this.nextPageView.el).html());
+        this.animateForward(__bind(function() {
+          return this.updateHeight();
+        }, this));
+      } else {
+        this.nextPageView = new PageView({
+          model: this.pages[name]
+        });
+        this.$(".page.next").html($(this.nextPageView.el).html());
+        this.animateBackward(__bind(function() {
+          return this.updateHeight();
+        }, this));
       }
-      return this.pageNumber = toPageNumber;
+      this.pageNumber = toPageNumber;
+      return this.setHeaderTitle(this.pages[name].get('header'));
     };
     CoffeeBook.prototype.getPageNumber = function() {
       return this.pageNumber;
-    };
-    CoffeeBook.prototype.currentPage = function() {
-      return this.pages.at(this.pageNumber);
     };
     CoffeeBook.prototype.nextPage = function() {
       return this.pages.at(this.pageNumber + 1);
@@ -278,21 +313,33 @@
     CoffeeBook.prototype.lastPage = function() {
       return this.pages.last();
     };
+    CoffeeBook.prototype.setHeaderTitle = function(title) {
+      return $(".header .title").text(title || '');
+    };
     return CoffeeBook;
   })();
   this.$(document).ready(__bind(function() {
-    this.Posts = new Pages;
-    this.Posts.add([
-      new Page({
-        title: "Backbone extensions best practices",
-        content: 'Sub Heading\n---------------\n1. Lets see if this works\n2. It\'s working\n3. Profit!\n> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,\nconsectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.\nVestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.\n\nSome code:\n    \n    mood = greatlyImproved if singing\n\n    if happy and knowsIt\n      clapsHands()\n      chaChaCha()\n    else\n      showIt()\n\n    date = if friday then sue else jill\n\n    options or= defaults'
-      }), new Page({
-        title: "Backbone extensions best practices",
-        content: 'Sub Heading\n---------------\n1. Lets see if this works\n2. It\'s working\n3. Profit!'
+    this.pages = {
+      home: new Page({
+        rank: 0,
+        title: false,
+        content: '  \n\<br/>\n![](images/avatar2.jpg) Hello, I\'m Chris McCord, a web developer with a \n  passion for science and building things. My current toolkit includes \n  Ruby, Rails, and coffeescript. Here you will find my ramblings and \n  things I find interesting around the internets.\n\n\<br/>\n# Recent Writings\n- More coffee(script) please\n\n# Twitter\n- @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.\n- Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp\n- CoffeeScript should have just been named BaconScript… it\'s just that good.\n\n\n\<br/>\n![](images/avatar2.jpg) Hello, I\'m Chris McCord, a web developer with a \n  passion for science and building things. My current toolkit includes \n  Ruby, Rails, and coffeescript. Here you will find my ramblings and \n  things I find interesting around the internets.\n\n\<br/>\n# Recent Writings\n- More coffee(script) please\n\n# Twitter\n- @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.\n- Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp\n- CoffeeScript should have just been named BaconScript… it\'s just that good.\n'
+      }),
+      about: new Page({
+        rank: 1,
+        header: "about",
+        title: "About me",
+        content: '\<br/>\n## Professional life\n> During the day I am a Ruby on Rails developer at [Littlelines](http://littlelines.com), a distinguished \ndesign and development studio nestled in the midwest with expertise in \ncutting-edge web development.\n\n\<br/>\n## Personal life\n> At home I\'m a husband to my lovely wife Jaclyn. I\'m passionate about \nlearning new things and a bit of a space nerd. I enjoy sci-fi novels, \nintelligent conversation, probably too many chickflicks, and hacking on \nwhatever interests me at the time. '
+      }),
+      contact: new Page({
+        rank: 2,
+        header: "contact",
+        title: "Contact info and places you can find me",
+        content: '- my first name @ this domain\n- [twitter]()\n- [facebook]()\n- [github]()'
       })
-    ]);
+    };
     window.Book = new CoffeeBook;
-    Book.pages = this.Posts;
+    Book.pages = this.pages;
     return Book.init();
   }, this));
 }).call(this);

@@ -1,15 +1,15 @@
 
 
-
 # Router
 class Router extends Backbone.Router
   routes:
-    ''                : 'home'
-    '/page/:page'     : 'page'
+    ''                              : 'home'
+    '/page/:name'                   : 'page'
+    '/page/:name/:number'           : 'page'
 
     
-  home:        -> Book.goTo(0)
-  page: (page) -> Book.goTo(page)
+  home:                    -> Book.goTo('home', 0)
+  page: (name, number = 0) -> Book.goTo(name, number)
 
 
 # Models
@@ -52,12 +52,15 @@ class @CoffeeBook extends Backbone.View
     turnWidthStart: 12
     foldOffset: 32
     height: 800
+    minHeight: 550
+    heightDuration: 200
     speedFactor: 0.30
     
   # Defaults automatically loaded when instantiated
   options: {}
-  
-  pageNumber: 0
+  pageNumber: null
+  currentPage: null
+  previousPage: null
   activePageView: null
   nextPageView: null
   pages: []
@@ -165,77 +168,123 @@ class @CoffeeBook extends Backbone.View
     @animating = false
     
 
+  updateHeight: (options = {}) ->
+    height = $(".page.active").height()
+    height = @options.minHeight if height < @options.minHeight
+    if options.animate == false
+      $(".book_wrap").css {height: height}
+    else
+      $(".book_wrap").animate {height: height}, @options.heightDuration
+      
   # Seek to page model
   #
-  goTo: (toPageNumber) ->
+  goTo: (name, toPageNumber) ->
     #TODO validate this
     toPageNumber = @pageNumber + 1 if toPageNumber == "next"
     toPageNumber = @pageNumber - 1 if toPageNumber == "back"
     toPageNumber = parseInt(toPageNumber)
-    if toPageNumber > @pageNumber
-      @nextPageView = new PageView({ model: @pages.at(toPageNumber) })
-      @$(".page.next").html($(@nextPageView.el).html())
-      @animateForward()
-      
-    else if toPageNumber < @pageNumber
-      @nextPageView = new PageView({ model: @pages.at(toPageNumber) })
-      @$(".page.next").html($(@nextPageView.el).html())
-      @animateBackward()
-    else
-      @activePageView  = new PageView({ model: @currentPage() })
+    
+    @previousPage = @currentPage
+    @currentPage = @pages[name]
+
+    if not @previousPage
+      @activePageView  = new PageView({ model: @pages[name] })
       @$(".page.active").html($(@activePageView.el).html())
+      @updateHeight({animate: false})
+    else if @currentPage?.get('rank') > @previousPage?.get('rank')
+      @nextPageView = new PageView({ model: @pages[name] })
+      @$(".page.next").html($(@nextPageView.el).html())
+      @animateForward =>
+        @updateHeight()
+    else
+      @nextPageView = new PageView({ model: @pages[name] })
+      @$(".page.next").html($(@nextPageView.el).html())
+      @animateBackward =>
+        @updateHeight()
     
     @pageNumber = toPageNumber
+    @setHeaderTitle(@pages[name].get('header'))
 
-  getPageNumber: -> @pageNumber
-  currentPage:   -> @pages.at(@pageNumber) 
-  nextPage:      -> @pages.at(@pageNumber + 1)
-  prevPage:      -> @pages.at(@pageNumber - 1)
-  firstPage:     -> @pages.first()
-  lastPage:      -> @pages.last()
+
+  getPageNumber:  -> @pageNumber
+  nextPage:       -> @pages.at(@pageNumber + 1)
+  prevPage:       -> @pages.at(@pageNumber - 1)
+  firstPage:      -> @pages.first()
+  lastPage:       -> @pages.last()
+  setHeaderTitle: (title) -> $(".header .title").text(title || '')
+
 
 @$(document).ready =>
-  @Posts = new Pages
-  @Posts.add [ 
-    new Page
-      title: "Backbone extensions best practices"
-      content: '''
-        Sub Heading
-        ---------------
-        1. Lets see if this works
-        2. It's working
-        3. Profit!
-        > This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
-        consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
-        Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
-        
-        Some code:
-            
-            mood = greatlyImproved if singing
+  @pages =  
+    home: new Page
+      rank: 0
+      title: false
+      content: '''  
+        \<br/>
+        ![](images/avatar2.jpg) Hello, I'm Chris McCord, a web developer with a 
+          passion for science and building things. My current toolkit includes 
+          Ruby, Rails, and coffeescript. Here you will find my ramblings and 
+          things I find interesting around the internets.
 
-            if happy and knowsIt
-              clapsHands()
-              chaChaCha()
-            else
-              showIt()
+        \<br/>
+        # Recent Writings
+        - More coffee(script) please
 
-            date = if friday then sue else jill
+        # Twitter
+        - @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.
+        - Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp
+        - CoffeeScript should have just been named BaconScript… it's just that good.
 
-            options or= defaults
+
+        \<br/>
+        ![](images/avatar2.jpg) Hello, I'm Chris McCord, a web developer with a 
+          passion for science and building things. My current toolkit includes 
+          Ruby, Rails, and coffeescript. Here you will find my ramblings and 
+          things I find interesting around the internets.
+
+        \<br/>
+        # Recent Writings
+        - More coffee(script) please
+
+        # Twitter
+        - @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.
+        - Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp
+        - CoffeeScript should have just been named BaconScript… it's just that good.
+
       '''
-  ,
-    new Page
-      title: "Backbone extensions best practices"
+
+    about:  new Page
+      rank: 1
+      header: "about"
+      title: "About me"
       content: '''
-        Sub Heading
-        ---------------
-        1. Lets see if this works
-        2. It's working
-        3. Profit!
-      '''    
-  ]
+        \<br/>
+        ## Professional life
+        > During the day I am a Ruby on Rails developer at [Littlelines](http://littlelines.com), a distinguished 
+        design and development studio nestled in the midwest with expertise in 
+        cutting-edge web development.
+
+        \<br/>
+        ## Personal life
+        > At home I'm a husband to my lovely wife Jaclyn. I'm passionate about 
+        learning new things and a bit of a space nerd. I enjoy sci-fi novels, 
+        intelligent conversation, probably too many chickflicks, and hacking on 
+        whatever interests me at the time. 
+      '''
+
+    contact: new Page
+      rank: 2
+      header: "contact"
+      title: "Contact info and places you can find me"
+      content: '''
+        - my first name @ this domain
+        - [twitter]()
+        - [facebook]()
+        - [github]()
+      '''
+  
   window.Book = new CoffeeBook
-  Book.pages = @Posts
+  Book.pages = @pages
   Book.init()
   # setTimeout((->
   #     speedFactor = CoffeeBook.defaults.speedFactor

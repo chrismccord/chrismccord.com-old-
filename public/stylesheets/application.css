@@ -12,9 +12,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 body {
   line-height: 1; }
 
-ol, ul {
-  list-style: none; }
-
 blockquote, q {
   quotes: none; }
 
@@ -39,6 +36,8 @@ body {
   height: 32px;
   background: url("../images/edge_bg2.png") repeat-x;
   width: 100%; }
+  .header a {
+    text-decoration: none; }
   .header ul.nav {
     display: inline;
     float: right; }
@@ -50,6 +49,11 @@ body {
       font-family: "Muli", sans-serif;
       font-size: 22px;
       color: #f2f2f2; }
+      .header ul.nav li a {
+        text-decoration: none;
+        font-family: "Muli", sans-serif;
+        font-size: 22px;
+        color: #f2f2f2; }
   .header h1 {
     float: left;
     line-height: 32px;
@@ -68,8 +72,9 @@ body {
   top: 40px;
   left: -430px;
   width: 1360px;
-  height: 650px;
+  height: 550px;
   padding: 8px;
+  overflow: hidden;
   padding-right: 16px;
   margin: 0 auto;
   background: #686868 url("../images/edge_bg2.png") repeat;
@@ -131,19 +136,25 @@ body {
     font-size: 15px;
     line-height: 1.5em;
     color: #2e2e2e; }
+    #book .right_page_container a {
+      color: #244fa6;
+      text-decoration: none; }
+    #book .right_page_container p {
+      padding-right: 20px; }
+    #book .right_page_container ul, #book .right_page_container ol {
+      padding: 1em;
+      margin-left: 1em; }
     #book .right_page_container blockquote {
       padding: 20px 40px 20px 40px; }
     #book .right_page_container img {
-      height: 400px;
-      width: auto;
-      display: block;
-      margin: 0 auto; }
+      float: left;
+      padding: 0px 10px; }
     #book .right_page_container h1 {
       padding-top: 14px;
       font-family: "Muli", sans-serif;
       color: #2e2e2e;
       font-weight: 300;
-      font-size: 2em;
+      font-size: 1.8em;
       margin-bottom: 0; }
     #book .right_page_container h2 {
       font-size: 1em;

@@ -2,10 +2,10 @@ $page_padding: 12px
 $top_z: 999
 $page_width: 743px
 
-// http://meyerweb.com/eric/tools/css/reset/ 
-// v2.0 | 20110126
-// License: none (public domain)
-
+=vertical_text
+  -webkit-transform: rotate(-90deg)
+  -moz-transform: rotate(-90deg)
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3)
 =meyer-reset
   html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video
     margin: 0
@@ -23,7 +23,7 @@ $page_width: 743px
     line-height: 1
 
   ol, ul
-    list-style: none
+    //list-style: none
 
   blockquote, q
     quotes: none
@@ -50,6 +50,8 @@ body
   padding: 0
 
 .header
+  a
+    text-decoration: none
   height: 32px
   background: url('../images/edge_bg2.png') repeat-x
   width: 100%
@@ -57,6 +59,11 @@ body
     display: inline
     float: right
     li
+      a
+        text-decoration: none
+        font-family: 'Muli', sans-serif
+        font-size: 22px
+        color: #f2f2f2
       line-height: 32px
       padding-left: 16x
       padding-right: 16px
@@ -83,8 +90,9 @@ body
   top: 40px
   left: -430px
   width: 1360px
-  height: 650px
+  height: 550px
   padding: 8px
+  overflow: hidden
   padding-right: 16px
   margin: 0 auto
   background: #686868 url('../images/edge_bg2.png') repeat
@@ -152,14 +160,25 @@ body
     font-size: 15px
     line-height: 1.5em
     color: #2e2e2e
+    a
+      color: #244fa6
+      text-decoration: none
+    p
+      padding-right: 20px
+    ul, ol
+      padding: 1em
+      //list-style: disc
+      margin-left: 1em
+
+        
     blockquote
       padding: 20px 40px 20px 40px
 
     img
-      height: 400px
-      width: auto
-      display: block
-      margin: 0 auto
+      float: left
+      padding: 0px 10px
+      //display: block
+      //margin: 0 auto
     h1
       padding-top: 14px
       //font-family: 'Istok Web', sans-serif
@@ -170,7 +189,7 @@ body
       //font-variant: small-caps
       //text-transform: none
       font-weight: 300
-      font-size: 2em
+      font-size: 1.8em
       margin-bottom: 0
     h2
       font-size: 1em
