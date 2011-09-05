@@ -234,23 +234,6 @@ class @CoffeeBook extends Backbone.View
         - @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.
         - Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp
         - CoffeeScript should have just been named BaconScript… it's just that good.
-
-
-        \<br/>
-        ![](images/avatar2.jpg) Hello, I'm Chris McCord, a web developer with a 
-          passion for science and building things. My current toolkit includes 
-          Ruby, Rails, and coffeescript. Here you will find my ramblings and 
-          things I find interesting around the internets.
-
-        \<br/>
-        # Recent Writings
-        - More coffee(script) please
-
-        # Twitter
-        - @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.
-        - Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp
-        - CoffeeScript should have just been named BaconScript… it's just that good.
-
       '''
 
     about:  new Page
