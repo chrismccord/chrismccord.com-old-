@@ -336,6 +336,12 @@
         header: "contact",
         title: "Contact info and places you can find me",
         content: '- my first name @ this domain\n- [twitter]()\n- [facebook]()\n- [github]()'
+      }),
+      writings: new Page({
+        rank: 3,
+        header: "writings",
+        title: "Writings",
+        content: '- More coffee(script) please'
       })
     };
     window.Book = new CoffeeBook;

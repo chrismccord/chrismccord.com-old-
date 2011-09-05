@@ -265,6 +265,14 @@ class @CoffeeBook extends Backbone.View
         - [facebook]()
         - [github]()
       '''
+      
+    writings: new Page
+      rank: 3
+      header: "writings"
+      title: "Writings"
+      content: '''
+        - More coffee(script) please
+      '''
   
   window.Book = new CoffeeBook
   Book.pages = @pages
