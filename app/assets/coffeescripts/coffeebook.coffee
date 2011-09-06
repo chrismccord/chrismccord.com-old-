@@ -224,7 +224,7 @@ class @CoffeeBook extends Backbone.View
         ![](images/avatar2.jpg) Hello, I'm Chris McCord, a web developer with a 
           passion for science and building things. My current toolkit includes 
           Ruby, Rails, and coffeescript. Here you will find my ramblings and 
-          things I find interesting around the internets.
+          things I find interesting around the internet.
 
         \<br/>
         # Recent Writings
@@ -272,6 +272,7 @@ class @CoffeeBook extends Backbone.View
       title: "Writings"
       content: '''
         - More coffee(script) please
+        \<br/><br/><br/><br/><br/><br/><br/><br/>tall<br/><br/><br/><br/><br/><br/><br/>page<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>test<br/>
       '''
   
   window.Book = new CoffeeBook

@@ -323,7 +323,7 @@
       home: new Page({
         rank: 0,
         title: false,
-        content: '  \n\<br/>\n![](images/avatar2.jpg) Hello, I\'m Chris McCord, a web developer with a \n  passion for science and building things. My current toolkit includes \n  Ruby, Rails, and coffeescript. Here you will find my ramblings and \n  things I find interesting around the internets.\n\n\<br/>\n# Recent Writings\n- More coffee(script) please\n\n# Twitter\n- @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.\n- Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp\n- CoffeeScript should have just been named BaconScript… it\'s just that good.'
+        content: '  \n\<br/>\n![](images/avatar2.jpg) Hello, I\'m Chris McCord, a web developer with a \n  passion for science and building things. My current toolkit includes \n  Ruby, Rails, and coffeescript. Here you will find my ramblings and \n  things I find interesting around the internet.\n\n\<br/>\n# Recent Writings\n- More coffee(script) please\n\n# Twitter\n- @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.\n- Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp\n- CoffeeScript should have just been named BaconScript… it\'s just that good.'
       }),
       about: new Page({
         rank: 1,
@@ -341,7 +341,7 @@
         rank: 3,
         header: "writings",
         title: "Writings",
-        content: '- More coffee(script) please'
+        content: '- More coffee(script) please\n\<br/><br/><br/><br/><br/><br/><br/><br/>tall<br/><br/><br/><br/><br/><br/><br/>page<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>test<br/>'
       })
     };
     window.Book = new CoffeeBook;
