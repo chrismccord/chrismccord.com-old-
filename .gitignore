@@ -2,3 +2,4 @@
 node_modules
 Gemfile
 Gemfile.lock
+.rvmrc
