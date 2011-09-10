@@ -1,10 +1,8 @@
-{ "name": "chrismccord"
-, "description": "Chris McCord"
-, "author": "Chris McCord"
-, "version": "0.0.1"
-, "main": "./server.js"
-, "dependencies":
-  {
-    'node-static': ">= 0.5.9"
+{
+  "name": "chrismccord",
+  "version": "0.0.1",
+  "main": "./server.js",
+  "dependencies": {
+    "node-static": ">= 0.5.9"
   }
 }
