@@ -4,7 +4,6 @@
     root: "./public",
     port: process.env.PORT || 3000
   };
-  require('coffee-script');
   sys = require('sys');
   http = require('http');
   https = require('https');
