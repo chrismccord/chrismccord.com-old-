@@ -354,7 +354,7 @@
         rank: 3,
         header: "writings",
         title: "Writings",
-        content: '- [More coffee(script) please](#/writings/more-coffeescript-please)\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\ndown here\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\ndown here                '
+        content: '- [CoffeeKup Rails: An asset pipleine engine for cofeekup](#/writings/coffeekup-rails)\n   '
       }),
       "more-coffeescript-please": new Page({
         rank: 100,

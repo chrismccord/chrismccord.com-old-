@@ -276,63 +276,8 @@ window.onload = ->
       header: "writings"
       title: "Writings"
       content: '''
-        - [More coffee(script) please](#/writings/more-coffeescript-please)
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        down here
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        \<br>
-        down here                
+        - [CoffeeKup Rails: An asset pipleine engine for cofeekup](#/writings/coffeekup-rails)
+           
       '''
   
     "more-coffeescript-please": new Page
