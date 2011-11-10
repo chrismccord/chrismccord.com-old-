@@ -15,8 +15,10 @@
     }
     Router.prototype.routes = {
       '': 'home',
-      '/page/:name': 'page',
-      '/page/:name/:number': 'page'
+      '/pages/:name': 'page',
+      '/pages/:name/:number': 'page',
+      '/writings/:name': 'page',
+      '/writings/:name/:number': 'page'
     };
     Router.prototype.home = function() {
       return Book.goTo('home', 0);
@@ -128,13 +130,13 @@
     };
     CoffeeBook.prototype.next = function() {
       if (!this.isAnimating()) {
-        window.location = "#/page/" + (this.getPageNumber() + 1);
+        window.location = "#/pages/" + (this.getPageNumber() + 1);
       }
       return false;
     };
     CoffeeBook.prototype.back = function() {
       if (!this.isAnimating()) {
-        window.location = "#/page/" + (this.getPageNumber() - 1);
+        window.location = "#/pages/" + (this.getPageNumber() - 1);
       }
       return false;
     };
@@ -245,9 +247,9 @@
       if (options == null) {
         options = {};
       }
-      height = $(".page.active").height();
+      height = $(".page.active").height() + 24;
       if (height < this.options.minHeight) {
-        height = this.options.minHeight;
+        height = this.options.minHeight + 24;
       }
       if (options.animate === false) {
         return $(".book_wrap").css({
@@ -318,12 +320,23 @@
     };
     return CoffeeBook;
   })();
+  window.onload = function() {
+    Book.updateHeight({
+      animate: false
+    });
+    return $(".header, .book_wrap").animate({
+      opacity: 1
+    }, 500);
+  };
   this.$(document).ready(__bind(function() {
+    $(".header, .book_wrap").css({
+      opacity: 0
+    });
     this.pages = {
       home: new Page({
         rank: 0,
         title: false,
-        content: '  \n\<br/>\n![](images/avatar2.jpg) Hello, I\'m Chris McCord, a web developer with a \n  passion for science and building things. My current toolkit includes \n  Ruby, Rails, and coffeescript. Here you will find my ramblings and \n  things I find interesting around the internet.\n\n\<br/>\n# Recent Writings\n- More coffee(script) please\n\n# Twitter\n- @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.\n- Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp\n- CoffeeScript should have just been named BaconScript… it\'s just that good.'
+        content: '  \n\<br/>\n![](images/avatar4.png) Hello, I\'m Chris McCord, a web developer with a \n  passion for science and building things. My current toolkit includes \n  Ruby, Rails, and coffeescript. Here you will find my ramblings and \n  things I find interesting around the internet.\n\n\<br/>\n# Recent Writings\n- [CoffeeKup Rails: An asset pipleine engine for cofeekup](#/writings/coffeekup-rails)        \n\n# Places you can find me\n- [twitter](https://twitter.com/#!/chris_mccord)\n- [facebook](https://www.facebook.com/chrisfmccord)\n- [github](https://github.com/chrismccord)\n\n# Twitter\n- @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.\n- Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp\n- CoffeeScript should have just been named BaconScript… it\'s just that good.'
       }),
       about: new Page({
         rank: 1,
@@ -335,13 +348,25 @@
         rank: 2,
         header: "contact",
         title: "Contact info and places you can find me",
-        content: '- my first name @ this domain\n- [twitter]()\n- [facebook]()\n- [github]()'
+        content: '- my first name @ this domain\n- [twitter](https://twitter.com/#!/chris_mccord)\n- [facebook](https://www.facebook.com/chrisfmccord)\n- [github](https://github.com/chrismccord)'
       }),
       writings: new Page({
         rank: 3,
         header: "writings",
         title: "Writings",
-        content: '- More coffee(script) please\n\<br/><br/><br/><br/><br/><br/><br/><br/>tall<br/><br/><br/><br/><br/><br/><br/>page<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>test<br/>'
+        content: '- [More coffee(script) please](#/writings/more-coffeescript-please)\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\ndown here\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\n\<br>\ndown here                '
+      }),
+      "more-coffeescript-please": new Page({
+        rank: 100,
+        header: "writings",
+        title: "More coffee(script) please",
+        content: ""
+      }),
+      "coffeekup-rails": new Page({
+        rank: 100,
+        header: "writings",
+        title: "CoffeeKup Rails: An asset pipleine engine for cofeekup",
+        content: "\<br/>\nI have been in the process of developing _yet another_ client side MVC framework. This one \nin particular in coffreescript and targeting Rails integration. I will have more on that \nas things progress. This gem grew out of my need to treat coffeekup template files as first \nclass citizens in the asset pipeline. The coffeekup node command is lacking in regards to \ndirectory watching and I wanted an experience identical to asset pipeline compilation for \ncoffee or jst files. Enter [coffeekup_rails](https://github.com/chrismccord/coffeekup_rails).\n\n## How it's used\nSay your client side views live in `/app/assets/javascripts/views` (default).\n\nGiven `/app/assets/javascripts/views/shared/hello.js.ck`:\n\n    h1 \"Hello \#{@name}.\"\n\nCoffeeKup will automatically compile the coffeescript source to a coffeekup javascript template under a desired \nglobal js object (defaults to `window.templates`). \nTemplate names are period delimited by directory structure. From the javascript console:\n\n    templates['shared.hello']({name: 'chris'})\n    => \"<h1>Hello chris.</h1>\"\n\nThis happens upon every page load when your .ck files change thanks to sprockets and the \nasset pipeline just as you would expect for a .coffee file. For installation instructions, configuration, \nand more, check the [github project page](https://github.com/chrismccord/coffeekup_rails)."
       })
     };
     window.Book = new CoffeeBook;

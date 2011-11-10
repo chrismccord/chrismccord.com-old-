@@ -1,2 +1,2 @@
-nodemon: nodemon server.js
+nodemon: nodemon server.coffee
 guard: guard

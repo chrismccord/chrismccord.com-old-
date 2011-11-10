@@ -2,9 +2,11 @@
 # Router
 class Router extends Backbone.Router
   routes:
-    ''                              : 'home'
-    '/page/:name'                   : 'page'
-    '/page/:name/:number'           : 'page'
+    ''                                  : 'home'
+    '/pages/:name'                      : 'page'
+    '/pages/:name/:number'              : 'page'
+    '/writings/:name'                   : 'page'
+    '/writings/:name/:number'           : 'page'
 
     
   home:                    -> Book.goTo('home', 0)
@@ -82,10 +84,10 @@ class @CoffeeBook extends Backbone.View
     Backbone.history.start()
     
   next: -> 
-    window.location = "#/page/#{@getPageNumber() + 1}" unless @isAnimating()
+    window.location = "#/pages/#{@getPageNumber() + 1}" unless @isAnimating()
     false
   back: -> 
-    window.location = "#/page/#{@getPageNumber() - 1}" unless @isAnimating()
+    window.location = "#/pages/#{@getPageNumber() - 1}" unless @isAnimating()
     false
 
   isAnimating: -> @animating
@@ -161,13 +163,14 @@ class @CoffeeBook extends Backbone.View
     
 
   updateHeight: (options = {}) ->
-    height = $(".page.active").height()
-    height = @options.minHeight if height < @options.minHeight
+    height = $(".page.active").height() + 24
+    height = @options.minHeight + 24 if height < @options.minHeight
     if options.animate == false
       $(".book_wrap").css {height: height}
     else
       $(".book_wrap").animate {height: height}, @options.heightDuration
       
+
   # Seek to page model
   #
   goTo: (name, toPageNumber) ->
@@ -206,22 +209,32 @@ class @CoffeeBook extends Backbone.View
   setHeaderTitle: (title) -> $(".header .title").text(title || '')
 
 
+window.onload = -> 
+  Book.updateHeight(animate: false)
+  $(".header, .book_wrap").animate opacity: 1, 500
+
 @$(document).ready =>
+  $(".header, .book_wrap").css opacity: 0
   @pages =  
     home: new Page
       rank: 0
       title: false
       content: '''  
         \<br/>
-        ![](images/avatar2.jpg) Hello, I'm Chris McCord, a web developer with a 
+        ![](images/avatar4.png) Hello, I'm Chris McCord, a web developer with a 
           passion for science and building things. My current toolkit includes 
           Ruby, Rails, and coffeescript. Here you will find my ramblings and 
           things I find interesting around the internet.
 
         \<br/>
         # Recent Writings
-        - More coffee(script) please
+        - [CoffeeKup Rails: An asset pipleine engine for cofeekup](#/writings/coffeekup-rails)        
 
+        # Places you can find me
+        - [twitter](https://twitter.com/#!/chris_mccord)
+        - [facebook](https://www.facebook.com/chrisfmccord)
+        - [github](https://github.com/chrismccord)
+        
         # Twitter
         - @mguterl @joefiorini I recently set up sunspot/solr for one of our projects and have been really impressed so far.
         - Just finished an excellent profile on Elon Musk by @BloombergNews http://bloom.bg/qgkNhp
@@ -253,9 +266,9 @@ class @CoffeeBook extends Backbone.View
       title: "Contact info and places you can find me"
       content: '''
         - my first name @ this domain
-        - [twitter]()
-        - [facebook]()
-        - [github]()
+        - [twitter](https://twitter.com/#!/chris_mccord)
+        - [facebook](https://www.facebook.com/chrisfmccord)
+        - [github](https://github.com/chrismccord)
       '''
       
     writings: new Page
@@ -263,10 +276,104 @@ class @CoffeeBook extends Backbone.View
       header: "writings"
       title: "Writings"
       content: '''
-        - More coffee(script) please
-        \<br/><br/><br/><br/><br/><br/><br/><br/>tall<br/><br/><br/><br/><br/><br/><br/>page<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>test<br/>
+        - [More coffee(script) please](#/writings/more-coffeescript-please)
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        down here
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        \<br>
+        down here                
       '''
   
+    "more-coffeescript-please": new Page
+      rank: 100
+      header: "writings"
+      title: "More coffee(script) please"
+      content: """
+      """
+
+    "coffeekup-rails": new Page
+      rank: 100
+      header: "writings"
+      title: "CoffeeKup Rails: An asset pipleine engine for cofeekup"
+      content: """
+        \<br/>
+        I have been in the process of developing _yet another_ client side MVC framework. This one 
+        in particular in coffreescript and targeting Rails integration. I will have more on that 
+        as things progress. This gem grew out of my need to treat coffeekup template files as first 
+        class citizens in the asset pipeline. The coffeekup node command is lacking in regards to 
+        directory watching and I wanted an experience identical to asset pipeline compilation for 
+        coffee or jst files. Enter [coffeekup_rails](https://github.com/chrismccord/coffeekup_rails).
+
+        ## How it's used
+        Say your client side views live in `/app/assets/javascripts/views` (default).
+        
+        Given `/app/assets/javascripts/views/shared/hello.js.ck`:
+
+            h1 "Hello \#{@name}."
+
+        CoffeeKup will automatically compile the coffeescript source to a coffeekup javascript template under a desired 
+        global js object (defaults to `window.templates`). 
+        Template names are period delimited by directory structure. From the javascript console:
+
+            templates['shared.hello']({name: 'chris'})
+            => "<h1>Hello chris.</h1>"
+
+        This happens upon every page load when your .ck files change thanks to sprockets and the 
+        asset pipeline just as you would expect for a .coffee file. For installation instructions, configuration, 
+        and more, check the [github project page](https://github.com/chrismccord/coffeekup_rails).
+      """
+
   window.Book = new CoffeeBook
   Book.pages = @pages
   Book.init()
