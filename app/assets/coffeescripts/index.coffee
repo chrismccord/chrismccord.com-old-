@@ -199,7 +199,7 @@ class @CoffeeBook extends Backbone.View
     
     @pageNumber = toPageNumber
     @setHeaderTitle(@pages[name].get('header'))
-
+    @setDocumentTitle(@pages[name].get('title'))
 
   getPageNumber:  -> @pageNumber
   nextPage:       -> @pages.at(@pageNumber + 1)
@@ -207,6 +207,7 @@ class @CoffeeBook extends Backbone.View
   firstPage:      -> @pages.first()
   lastPage:       -> @pages.last()
   setHeaderTitle: (title) -> $(".header .title").text(title || '')
+  setDocumentTitle: (title) -> document.title = title || "Chris McCord"
 
 
 window.onload = -> 

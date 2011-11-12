@@ -298,7 +298,8 @@
         }, this));
       }
       this.pageNumber = toPageNumber;
-      return this.setHeaderTitle(this.pages[name].get('header'));
+      this.setHeaderTitle(this.pages[name].get('header'));
+      return this.setDocumentTitle(this.pages[name].get('title'));
     };
     CoffeeBook.prototype.getPageNumber = function() {
       return this.pageNumber;
@@ -317,6 +318,9 @@
     };
     CoffeeBook.prototype.setHeaderTitle = function(title) {
       return $(".header .title").text(title || '');
+    };
+    CoffeeBook.prototype.setDocumentTitle = function(title) {
+      return document.title = title || "Chris McCord";
     };
     return CoffeeBook;
   })();
